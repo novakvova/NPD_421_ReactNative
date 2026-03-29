@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Auth.Login;
+using Application.Interfaces;
 using Application.Services;
 using Domain;
 using Domain.Entities.Identity;
@@ -36,6 +37,11 @@ public static class DependencyInjection
             .AddDefaultTokenProviders();
 
         services.AddScoped<ISeederService, SeederService>();
+
+        // MediatR
+        services.AddMediatR(cfg => {
+            cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly);
+        });
 
         // Quartz
         services.AddQuartz(q =>
