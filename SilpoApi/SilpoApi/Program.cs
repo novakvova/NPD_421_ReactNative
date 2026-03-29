@@ -1,3 +1,5 @@
+using Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
+
+// Мтод що будує залежності у infrstructure рівні
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
 
