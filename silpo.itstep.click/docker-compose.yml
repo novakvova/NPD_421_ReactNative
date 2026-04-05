@@ -29,6 +29,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: "Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      ServerRunUrl: "https://silpo.itstep.click"
     ports:
       - "127.0.0.1:4081:8080"
     depends_on:

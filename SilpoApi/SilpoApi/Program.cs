@@ -1,4 +1,5 @@
 using Infrastructure;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,12 +7,29 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Servers = [
+                new OpenApiServer
+            {
+                Url = builder.Configuration["ServerRunUrl"]
+            }
+            ];
+
+        return Task.CompletedTask;
+    });
+});
 
 // Мтод що будує залежності у infrstructure рівні
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+builder.Services.AddCors();
+
 var app = builder.Build();
+
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 // Configure the HTTP request pipeline.
 
