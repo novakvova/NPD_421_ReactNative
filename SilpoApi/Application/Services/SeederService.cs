@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Bogus;
+using Domain;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,10 +8,14 @@ using static Bogus.DataSets.Name;
 
 namespace Application.Services;
 
-public class SeederService(UserManager<UserEntity> userManager) : ISeederService
+public class SeederService(
+    AppDbContext context,
+    UserManager<UserEntity> userManager) : ISeederService
 {
     public async Task SeedUsersAsync()
     {
+        await context.Database.MigrateAsync();
+
         if(await userManager.Users.AnyAsync())
         {
             return;

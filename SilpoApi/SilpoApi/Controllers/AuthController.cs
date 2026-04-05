@@ -1,13 +1,17 @@
 ﻿using Application.Auth.Login;
+using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace SilpoApi.Controllers;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class AuthController(IMediator mediator) : ControllerBase
+public class AuthController(IMediator mediator, 
+    UserManager<UserEntity> userManager) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
@@ -25,5 +29,19 @@ public class AuthController(IMediator mediator) : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetUsers()
+    {
+        var users = await userManager.Users
+            .Select(
+            x => new
+            {
+                x.Id,
+                x.Email,
+                FullName = x.LastName + " " + x.FirstName
+
+            }).ToListAsync();
+        return Ok(users);
     }
 }
