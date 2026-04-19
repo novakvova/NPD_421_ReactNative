@@ -1,20 +1,29 @@
 import {Image} from 'expo-image';
-import {Platform, StyleSheet, View, Text} from 'react-native';
+import {Platform, StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 
 import {HelloWave} from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import {ThemedText} from '@/components/themed-text';
 import {ThemedView} from '@/components/themed-view';
-import {Link} from 'expo-router';
+import {Link, Redirect, router} from 'expo-router';
 import {useEffect} from "react";
+import {useGetUsersQuery} from "@/services/AuthService";
 
 export default function HomeScreen() {
-    useEffect(() => {
-        fetch("https://silpo.itstep.click/api/Auth/GetUsers")
-            .then(res => res.json())
-            .then(data => console.log("Result", data))
-            .catch(err => console.log("Error fetch", err));
-    }, []);
+    // useEffect(() => {
+    //     fetch("https://silpo.itstep.click/api/Auth/GetUsers")
+    //         .then(res => res.json())
+    //         .then(data => console.log("Result", data))
+    //         .catch(err => console.log("Error fetch", err));
+    // }, []);
+
+    const {data: users} = useGetUsersQuery();
+
+    console.log("Users", users);
+
+    // if(users && users.length > 0) {
+    //     Redirect("/login");
+    // }
 
     return (
         <ParallaxScrollView
@@ -25,10 +34,16 @@ export default function HomeScreen() {
                     style={styles.reactLogo}
                 />
             }>
-            <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title">Привіт!</ThemedText>
-                <HelloWave/>
-            </ThemedView>
+            {/* КНОПКА НА ГОЛОВНУ */}
+            <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={() => router.replace("/login")}
+                className="bg-emerald-500 py-4 rounded-2xl items-center mx-6"
+            >
+                <Text className="text-white text-lg font-bold">
+                    Вхід
+                </Text>
+            </TouchableOpacity>
             <View>
                 <Text className={"text-3xl color-blue-600 font-bold"}>Привіт козаки і козачки</Text>
             </View>
