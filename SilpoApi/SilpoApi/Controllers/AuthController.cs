@@ -1,4 +1,5 @@
 ﻿using Application.Auth.Login;
+using Application.Auth.Register;
 using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -43,5 +44,20 @@ public class AuthController(IMediator mediator,
 
             }).ToListAsync();
         return Ok(users);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register([FromBody] RegisterCommand request)
+    {
+        try
+        {
+            // відправляємо команду до MediatR, яка обробить логіку аутентифікації
+            await mediator.Send(request);
+            return Ok(); // повертаємо результат у вигляді JSON
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message); // повертаємо код 400 + помилку, якщо щось пішло не так
+        }
     }
 }
