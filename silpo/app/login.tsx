@@ -10,9 +10,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm } from 'react-hook-form';
 
-import {EmailInput} from "@/constants/form/EmailInput";
+import {EmailInput} from "@/components/form/EmailInput";
 import {ILogin} from "@/types/auth/ILogin";
-import {PasswordInput} from "@/constants/form/PasswordInput";
+import {PasswordInput} from "@/components/form/PasswordInput";
+import {useLoginMutation} from "@/services/AuthService";
 
 export default function LoginScreen() {
     const { control, handleSubmit, formState: { errors } } = useForm<ILogin>({
@@ -23,16 +24,20 @@ export default function LoginScreen() {
         mode: 'onBlur',
     });
 
+    const [login, {isLoading, error}] = useLoginMutation();
 
-    const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = async (data: ILogin) => {
-        setIsLoading(true);
         try {
             console.log('Form data:', data);
-            // await loginAPI(data);
-        } finally {
-            setIsLoading(false);
+            const result = await login(data).unwrap();
+            console.log(result);
+        }
+        catch(ex) {
+            console.log('Error occured', ex);
+        }
+        finally {
+            // setIsLoading(false);
         }
     };
 
@@ -58,6 +63,14 @@ export default function LoginScreen() {
                             Введіть свої дані для входу
                         </Text>
                     </View>
+
+                    {error && (
+                        <View className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-xl p-4">
+                            <Text className="text-red-700 dark:text-red-200 text-sm font-medium">
+                                Не вірно вказано дані
+                            </Text>
+                        </View>
+                    )}
 
                     {/* Form Card */}
                     <View className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 gap-4 shadow-sm">
