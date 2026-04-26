@@ -2,18 +2,20 @@ import React, { useState } from 'react';
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
     KeyboardAvoidingView,
     Platform,
     ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useForm, Controller } from 'react-hook-form';
-import { Eye, EyeOff } from 'lucide-react-native';
+import { useForm } from 'react-hook-form';
+
+import {EmailInput} from "@/constants/form/EmailInput";
+import {ILogin} from "@/types/auth/ILogin";
+import {PasswordInput} from "@/constants/form/PasswordInput";
 
 export default function LoginScreen() {
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const { control, handleSubmit, formState: { errors } } = useForm<ILogin>({
         defaultValues: {
             email: '',
             password: '',
@@ -21,10 +23,10 @@ export default function LoginScreen() {
         mode: 'onBlur',
     });
 
-    const [showPassword, setShowPassword] = useState(false);
+
     const [isLoading, setIsLoading] = useState(false);
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: ILogin) => {
         setIsLoading(true);
         try {
             console.log('Form data:', data);
@@ -60,100 +62,19 @@ export default function LoginScreen() {
                     {/* Form Card */}
                     <View className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 gap-4 shadow-sm">
                         {/* Email Field */}
-                        <View className="gap-2">
-                            <Text className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">
-                                Email
-                            </Text>
-                            <Controller
-                                control={control}
-                                name="email"
-                                rules={{
-                                    required: 'Email є обов\'язковим',
-                                    pattern: {
-                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                        message: 'Введіть коректний email',
-                                    },
-                                }}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <>
-                                        <TextInput
-                                            className={`px-4 py-3 text-base rounded-xl border-2 ${
-                                                errors.email
-                                                    ? 'border-red-400 dark:border-red-500 bg-red-50 dark:bg-red-900/20 text-red-900 dark:text-red-100'
-                                                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700 text-slate-900 dark:text-white'
-                                            } placeholder:text-slate-500 dark:placeholder:text-slate-400`}
-                                            placeholder="your@email.com"
-                                            onChangeText={onChange}
-                                            onBlur={onBlur}
-                                            value={value}
-                                            keyboardType="email-address"
-                                            autoCapitalize="none"
-                                            autoCorrect={false}
-                                            editable={!isLoading}
-                                        />
-                                        {errors.email && (
-                                            <Text className="text-sm text-red-500 dark:text-red-400 ml-1">
-                                                {errors.email.message}
-                                            </Text>
-                                        )}
-                                    </>
-                                )}
-                            />
-                        </View>
+
+                        <EmailInput
+                            label={"Електронна пошта"}
+                            control={control}
+                            isLoading={isLoading}
+                            error={errors.email} />
 
                         {/* Password Field */}
-                        <View className="gap-2">
-                            <Text className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">
-                                Пароль
-                            </Text>
-                            <Controller
-                                control={control}
-                                name="password"
-                                rules={{
-                                    required: 'Пароль є обов\'язковим',
-                                    minLength: {
-                                        value: 6,
-                                        message: 'Пароль має бути не менше 6 символів',
-                                    },
-                                }}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <>
-                                        <View className={`flex-row items-center border-2 rounded-xl px-4 ${
-                                            errors.password
-                                                ? 'border-red-400 dark:border-red-500 bg-red-50 dark:bg-red-900/20'
-                                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700'
-                                        }`}>
-                                            <TextInput
-                                                className="flex-1 py-3 text-base text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
-                                                placeholder="••••••••"
-                                                onChangeText={onChange}
-                                                onBlur={onBlur}
-                                                value={value}
-                                                secureTextEntry={!showPassword}
-                                                autoCapitalize="none"
-                                                editable={!isLoading}
-                                            />
-                                            <TouchableOpacity
-                                                onPress={() => setShowPassword(!showPassword)}
-                                                disabled={isLoading}
-                                                className="pl-2"
-                                            >
-                                                {showPassword ? (
-                                                    <EyeOff size={20} className="text-slate-500 dark:text-slate-400" />
-                                                ) : (
-                                                    <Eye size={20} className="text-slate-500 dark:text-slate-400" />
-                                                )}
-                                            </TouchableOpacity>
-                                        </View>
-                                        {errors.password && (
-                                            <Text className="text-sm text-red-500 dark:text-red-400 ml-1">
-                                                {errors.password.message}
-                                            </Text>
-                                        )}
-                                    </>
-                                )}
-                            />
-                        </View>
+                        <PasswordInput
+                            label={"Пароль"}
+                            control={control}
+                            isLoading={isLoading}
+                            error={errors.password} />
 
                         {/* Forgot Password */}
                         <TouchableOpacity
