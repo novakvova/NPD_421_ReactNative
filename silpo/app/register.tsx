@@ -18,6 +18,7 @@ import {router} from "expo-router";
 import {FirstNameInput} from "@/components/form/register/FirstNameInput";
 import {LastNameInput} from "@/components/form/register/LastNameInput";
 import ScrollView = Animated.ScrollView;
+import {getErrorMessage} from "@/utils/getErrorMessage";
 
 export default function RegisterScreen() {
     const { control, handleSubmit, formState: { errors } } = useForm<IRegister>({
@@ -72,9 +73,9 @@ export default function RegisterScreen() {
                         </View>
 
                         {error && (
-                            <View className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-xl p-4">
-                                <Text className="text-red-700 dark:text-red-200 text-sm font-medium">
-                                    Не вірно вказано дані
+                            <View className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-xl p-4 pb-0">
+                                <Text className="text-red-700 dark:text-red-200 text-sm font-medium ">
+                                    {getErrorMessage(error)}
                                 </Text>
                             </View>
                         )}
