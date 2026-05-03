@@ -19,6 +19,9 @@ export const FirstNameInput: React.FC<Props<IRegister>> = ({control, error, isLo
             <Controller
                 control={control}
                 name="firstName"
+                rules={{
+                    required: "Ім'я є обов'язковим",
+                }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <>
                         <TextInput

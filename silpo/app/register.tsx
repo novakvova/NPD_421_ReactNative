@@ -52,7 +52,6 @@ export default function RegisterScreen() {
             <ScrollView>
 
                 <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     className="flex-1 py-20"
                 >
                     <View className="flex-1 justify-center px-6 gap-6">
