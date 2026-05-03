@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     Platform,
-    ActivityIndicator,
+    ActivityIndicator, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm } from 'react-hook-form';
@@ -32,7 +32,7 @@ export default function LoginScreen() {
         try {
             console.log('Form data:', data);
             const result = await login(data).unwrap();
-            console.log(result);
+            Alert.alert("Вхід успішний", "Ми Вас вітаємо. Успішно.")
         }
         catch(ex) {
             console.log('Error occured', ex);

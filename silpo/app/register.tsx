@@ -39,6 +39,7 @@ export default function RegisterScreen() {
             console.log('Form data:', data);
             const result = await register(data).unwrap();
             console.log(result);
+            router.replace("/login")
         }
         catch(ex) {
             console.log('Error occured', ex);
