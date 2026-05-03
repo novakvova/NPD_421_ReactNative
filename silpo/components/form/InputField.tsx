@@ -4,7 +4,7 @@ import { TextInput, TextInputProps } from "react-native";
 interface InputFieldProps extends TextInputProps {
     placeholder: string;
     additionalClass?: string;
-}A
+}
 
 export const InputField: React.FC<InputFieldProps> = ({ placeholder, ...props }) => {
     return (

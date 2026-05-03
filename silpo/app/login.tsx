@@ -14,6 +14,7 @@ import {EmailInput} from "@/components/form/EmailInput";
 import {ILogin} from "@/types/auth/ILogin";
 import {PasswordInput} from "@/components/form/PasswordInput";
 import {useLoginMutation} from "@/services/AuthService";
+import {router} from "expo-router";
 
 export default function LoginScreen() {
     const { control, handleSubmit, formState: { errors } } = useForm<ILogin>({
@@ -128,7 +129,7 @@ export default function LoginScreen() {
                         <Text className="text-slate-600 dark:text-slate-400 text-sm">
                             Немає акаунту?
                         </Text>
-                        <TouchableOpacity disabled={isLoading}>
+                        <TouchableOpacity disabled={isLoading} onPress={() => router.replace("/register")}>
                             <Text className="text-slate-900 dark:text-white font-semibold text-sm">
                                 Зареєструватись
                             </Text>

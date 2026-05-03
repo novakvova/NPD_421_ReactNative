@@ -3,6 +3,8 @@ import {BASE_URL} from "@/constants/Urls";
 import {IUserView} from "@/types/auth/IUserView";
 import {ILoginResponse} from "@/types/auth/ILoginResponse";
 import {ILogin} from "@/types/auth/ILogin";
+import { IRegisterResponse } from "@/types/auth/IRegisterResponse";
+import {IRegister} from "@/types/auth/IRegister";
 
 export const AuthService = createApi({
    reducerPath: "authService",
@@ -20,11 +22,20 @@ export const AuthService = createApi({
                 body: data
             }),
 
+        }),
+        register: builder.mutation<IRegisterResponse, IRegister>({
+            query:(data) => ({
+                url: 'register',
+                method: 'POST',
+                body: data
+            }),
+
         })
     })
 });
 
 export const {
     useGetUsersQuery,
+    useRegisterMutation,
     useLoginMutation,
 } = AuthService;
