@@ -22,13 +22,20 @@ public class RegisterCommandHandler(UserManager<UserEntity> userManager) : IRequ
     public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         // написати логіку ств. користувача в бд
-        UserEntity user = new UserEntity()
+        var user = await userManager.FindByEmailAsync(request.Email);
+        if(user != null)
+        {
+            throw new Exception("Дана електронна пошта уже зареєстрована!");
+        }
+
+        user = new UserEntity()
         {
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
             UserName = request.Email
         };
+
 
         var res = await userManager.CreateAsync(user, request.Password);
         if (!res.Succeeded)
