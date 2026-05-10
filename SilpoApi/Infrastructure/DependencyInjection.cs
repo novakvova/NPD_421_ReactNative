@@ -4,11 +4,15 @@ using Application.Services;
 using Domain;
 using Domain.Entities.Identity;
 using Infrastructure.Jobs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Quartz;
+using System.Security.Claims;
+using System.Text;
 
 namespace Infrastructure;
 
@@ -37,6 +41,7 @@ public static class DependencyInjection
             .AddDefaultTokenProviders();
 
         services.AddScoped<ISeederService, SeederService>();
+        services.AddScoped<ITokenService, TokenService>();
 
         // MediatR
         services.AddMediatR(cfg => {
@@ -55,6 +60,26 @@ public static class DependencyInjection
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(o =>
+        {
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = false,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]!)),
+                RoleClaimType = ClaimTypes.Role
+            };
+        });
+
+        services.AddAuthorization();
 
         return services;
     }

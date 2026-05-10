@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Identity;
+﻿using Application.Interfaces;
+using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -7,7 +8,10 @@ namespace Application.Auth.Login;
 /// <summary>
 /// Обробник команди для входу користувача в систему.
 /// </summary>
-public class LoginCommandHandler(UserManager<UserEntity> userManager) 
+public class LoginCommandHandler(
+        UserManager<UserEntity> userManager,
+        ITokenService _tokenService
+    ) 
     : IRequestHandler<LoginCommand, LoginResponseDto>
 {
     public async Task<LoginResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -27,7 +31,7 @@ public class LoginCommandHandler(UserManager<UserEntity> userManager)
 
         return new LoginResponseDto
         {
-            Token = "Salo"
+            Token = await _tokenService.CreateTokenAsync(user)
         };
     }
 }

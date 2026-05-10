@@ -107,3 +107,14 @@ module.exports = withNativeWind(config, { input: './global.css' })
 @tailwind components;
 @tailwind utilities;
 ```
+
+***Build APK***
+```
+npx expo prebuild --clean
+
+cd android
+.\gradlew clean
+.\gradlew assembleRelease
+android\app\build\outputs\apk\release\app-release.apk
+
+```
