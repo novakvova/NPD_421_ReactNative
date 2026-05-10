@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -15,6 +15,7 @@ import {ILogin} from "@/types/auth/ILogin";
 import {PasswordInput} from "@/components/form/PasswordInput";
 import {useLoginMutation} from "@/services/AuthService";
 import {router} from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
     const { control, handleSubmit, formState: { errors } } = useForm<ILogin>({
@@ -28,11 +29,26 @@ export default function LoginScreen() {
     const [login, {isLoading, error}] = useLoginMutation();
 
 
+    useEffect(() => {
+        async function checkLogin() {
+            if (await AsyncStorage.getItem('accessToken'))
+            {
+                router.replace("/profile")
+            }
+        }
+        checkLogin();
+    }, [])
+
     const onSubmit = async (data: ILogin) => {
         try {
             console.log('Form data:', data);
             const result = await login(data).unwrap();
+
+            await AsyncStorage.setItem('accessToken', result.token);
+
             Alert.alert("Вхід успішний", "Ми Вас вітаємо. Успішно.")
+
+            router.replace("/profile")
         }
         catch(ex) {
             console.log('Error occured', ex);
@@ -73,7 +89,6 @@ export default function LoginScreen() {
                         </View>
                     )}
 
-                    {/* Form Card */}
                     <View className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 gap-4 shadow-sm">
                         {/* Email Field */}
 
