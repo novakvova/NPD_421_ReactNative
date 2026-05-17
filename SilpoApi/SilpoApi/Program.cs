@@ -1,6 +1,7 @@
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using SilpoApi.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,13 +71,27 @@ builder.Services.AddOpenApi(options =>
 // Мтод що будує залежності у infrstructure рівні
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(_ => true);
+    });
+});
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+app.UseCors();
 
 // Configure the HTTP request pipeline.
+
+app.MapHub<ChatHub>("/chat");
 
 app.MapOpenApi();
 
