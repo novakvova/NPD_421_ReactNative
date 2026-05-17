@@ -14,13 +14,14 @@
         <input type="button" id="sendBtn" value="Отправить" />
     </div>
     <div id="chatroom"></div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/9.0.6/signalr.min.js"
         integrity="sha512-kkMt8UThSmWcdXLYFaGZ/U6vyWSNLZMUWQ5SMeF80pGqrEkH5ei9D/3MbVQpB8p7D5C3A4vlX7BpsWTT2BfB6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         const hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5041/chat")
+            // .withUrl("http://localhost:5041/chat")
+            .withUrl("https://silpo.itstep.click/chat")
             .build();
 
         hubConnection.on("Send", function (data) {
