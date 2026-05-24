@@ -47,7 +47,8 @@ public class AuthController(IMediator mediator,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register([FromBody] RegisterCommand request)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Register([FromForm] RegisterCommand request)
     {
         try
         {
