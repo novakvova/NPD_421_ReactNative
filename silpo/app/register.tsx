@@ -6,6 +6,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     ActivityIndicator, Animated,
+    Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm } from 'react-hook-form';
@@ -19,20 +20,51 @@ import {FirstNameInput} from "@/components/form/register/FirstNameInput";
 import {LastNameInput} from "@/components/form/register/LastNameInput";
 import ScrollView = Animated.ScrollView;
 import {getErrorMessage} from "@/utils/getErrorMessage";
+import * as ImagePicker from 'expo-image-picker';
 
 export default function RegisterScreen() {
-    const { control, handleSubmit, formState: { errors } } = useForm<IRegister>({
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const { control, handleSubmit, formState: { errors }, setValue } = useForm<IRegister>({
         defaultValues: {
             email: '',
             password: '',
             firstName: '',
-            lastName: ''
+            lastName: '',
+            image: null,
         },
         mode: 'onBlur',
     });
 
     const [register, {isLoading, error}] = useRegisterMutation();
 
+    const pickImage = async () => {
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!permission.granted) {
+            alert('Потрібен доступ до галереї');
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            const asset = result.assets[0];
+
+            setSelectedImage(asset.uri);
+
+            setValue('image', {
+                uri: asset.uri,
+                name: 'avatar.jpg',
+                type: 'image/jpeg',
+            } as any);
+        }
+    };
 
     const onSubmit = async (data: IRegister) => {
         try {
@@ -70,6 +102,37 @@ export default function RegisterScreen() {
                             </Text>
                             <Text className="text-base text-slate-600 dark:text-slate-400">
                                 Введіть свої дані для реєстрації
+                            </Text>
+                        </View>
+
+                        {/* Avatar Picker */}
+                        <View className="items-center">
+                            <TouchableOpacity
+                                onPress={pickImage}
+                                disabled={isLoading}
+                                activeOpacity={0.85}
+                                className="relative"
+                            >
+                                {selectedImage ? (
+                                    <Image
+                                        source={{ uri: selectedImage }}
+                                        className="w-28 h-28 rounded-full border-4 border-slate-200 dark:border-slate-700"
+                                    />
+                                ) : (
+                                    <View className="w-28 h-28 rounded-full bg-slate-100 dark:bg-slate-800 border-4 border-dashed border-slate-300 dark:border-slate-600 items-center justify-center">
+                                        <Text className="text-4xl">📷</Text>
+                                    </View>
+                                )}
+
+                                <View className="absolute bottom-1 right-1 bg-slate-900 dark:bg-white w-9 h-9 rounded-full items-center justify-center">
+                                    <Text className="text-white dark:text-slate-900 text-lg font-bold">
+                                        +
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Text className="text-slate-600 dark:text-slate-400 text-sm mt-3">
+                                Оберіть фото профілю
                             </Text>
                         </View>
 

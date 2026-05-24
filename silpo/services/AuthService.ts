@@ -5,6 +5,7 @@ import {ILoginResponse} from "@/types/auth/ILoginResponse";
 import {ILogin} from "@/types/auth/ILogin";
 import { IRegisterResponse } from "@/types/auth/IRegisterResponse";
 import {IRegister} from "@/types/auth/IRegister";
+import {serialize} from "object-to-formdata";
 
 export const AuthService = createApi({
    reducerPath: "authService",
@@ -27,9 +28,9 @@ export const AuthService = createApi({
             query:(data) => ({
                 url: 'register',
                 method: 'POST',
-                body: data
+                body: serialize(data)
             }),
-
+            invalidatesTags: ["GetUsers"]
         })
     })
 });

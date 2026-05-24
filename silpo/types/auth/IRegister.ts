@@ -3,4 +3,5 @@ export interface IRegister {
     password: string;
     firstName: string;
     lastName: string;
+    image: File | null;
 }
