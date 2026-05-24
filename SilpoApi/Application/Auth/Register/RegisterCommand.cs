@@ -1,31 +1,39 @@
-﻿using Domain.Entities.Identity;
+﻿using Application.Interfaces;
+using Domain.Entities.Identity;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Auth.Register;
 
 public class RegisterCommand : IRequest
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public IFormFile? Image { get; set; }
 }
 
-public class RegisterCommandHandler(UserManager<UserEntity> userManager) : IRequestHandler<RegisterCommand>
+public class RegisterCommandHandler(
+        UserManager<UserEntity> userManager,
+        IImageService _imageService
+    ) : IRequestHandler<RegisterCommand>
 {
     public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         // написати логіку ств. користувача в бд
         var user = await userManager.FindByEmailAsync(request.Email);
-        if(user != null)
+        if (user != null)
         {
             throw new Exception("Дана електронна пошта уже зареєстрована!");
+        }
+
+        string? image = null;
+
+        if (request.Image != null)
+        {
+            image = await _imageService.SaveImageAsync(request.Image);
         }
 
         user = new UserEntity()
@@ -33,7 +41,8 @@ public class RegisterCommandHandler(UserManager<UserEntity> userManager) : IRequ
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
-            UserName = request.Email
+            UserName = request.Email,
+            Image = image
         };
 
 

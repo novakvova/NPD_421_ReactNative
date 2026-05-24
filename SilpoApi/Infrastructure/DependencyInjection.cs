@@ -42,6 +42,7 @@ public static class DependencyInjection
 
         services.AddScoped<ISeederService, SeederService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IImageService, ImageService>();
 
         // MediatR
         services.AddMediatR(cfg => {
