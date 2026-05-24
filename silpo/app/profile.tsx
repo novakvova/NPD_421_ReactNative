@@ -81,6 +81,12 @@ export default function ProfileScreen() {
                             </Text>
                         )}
                     </TouchableOpacity>
+
+                    <TouchableOpacity disabled={isLoading} onPress={() => router.replace("/chat")}>
+                        <Text className="text-slate-900 dark:text-white font-semibold text-sm">
+                            Чат
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </SafeAreaView>
         </>
